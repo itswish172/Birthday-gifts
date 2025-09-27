@@ -1,134 +1,244 @@
-<!DOCTYPE html>
-<html lang="hi">
+<!DOCTYPE html><html lang="hi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday | Gaurav Bhai</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Gaurav Bhai 🎉</title>
   <style>
     :root{
-      --sky:#cfefff;    /* हल्का आसमानी */
-      --saff:#ffca80;   /* नरम भगवा */
-      --text:#1d2a35;
-    }
-    html,body{height:100%;margin:0;overflow:hidden;font-family:system-ui,Segoe UI,Roboto,Arial}
-    /* स्मूद बैकग्राउंड शिफ्ट (आसमानी→भगवा) */
-    .bg{position:fixed;inset:0;background:linear-gradient(120deg,var(--sky),var(--saff));background-size:200% 200%;
-        animation:bgShift 20s ease-in-out infinite alternate;z-index:-2}
-    @keyframes bgShift{from{background-position:0% 50%}to{background-position:100% 50%}}
+      --sky-start: #cfeefd;
+      --sky-end: #e6f7ff;
+      --bhagwa-start: #fff1e6; /* light bhagwa */
+      --bhagwa-end: #ffd7a6;
+    }*{box-sizing:border-box}
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--sky-start), var(--sky-end));
+  transition: background 2s ease-in-out;
+}
 
-    canvas#bubbles,canvas#emojis{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+/* slide container */
+.page-wrap{
+  position: relative;
+  min-height: 100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:6vh;
+}
 
-    /* तारीख/समय */
-    .datetime{position:fixed;left:50%;transform:translateX(-50%);text-align:center;user-select:none;color:#0f3057}
-    .date{top:10px;font-weight:600;background:rgba(255,255,255,.6);padding:6px 12px;border-radius:12px;backdrop-filter:blur(6px)}
-    .time{bottom:10px;font-weight:700;font-size:18px;background:rgba(255,255,255,.6);padding:8px 14px;border-radius:12px;backdrop-filter:blur(6px)}
+.card{
+  width: min(920px, 95%);
+  background: rgba(255,255,255,0.65);
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  padding: 28px;
+  box-shadow: 0 10px 40px rgba(2,6,23,0.15);
+  transform: translateY(-120vh);
+  animation: slideDown 5s forwards ease-out;
+}
 
-    /* 5s स्लाइड-इन + काउंटडाउन */
-    .intro{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:slideDown 5s ease-in-out forwards}
-    @keyframes slideDown{0%{transform:translateY(-100%)}100%{transform:translateY(0%)}}
+@keyframes slideDown{
+  0%{ transform: translateY(-120vh); opacity:0 }
+  40%{ opacity:1 }
+  100%{ transform: translateY(0); opacity:1 }
+}
 
-    .countdown-wrap{width:220px;height:220px;position:relative;display:grid;place-items:center;filter:drop-shadow(0 10px 30px rgba(0,0,0,.15))}
-    .cd-number{position:absolute;font-size:64px;font-weight:800;color:#0c2d57;text-shadow:0 2px 0 rgba(255,255,255,.6)}
-    svg{width:220px;height:220px;transform:rotate(-90deg)}
-    .ring-bg{stroke:rgba(255,255,255,.6);stroke-width:14;fill:none}
-    .ring-progress{stroke:url(#grad);stroke-width:14;fill:none;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.top-datetime{ text-align:center; margin-bottom:12px; display:none; }
+.top-datetime .date{ font-size:1.05rem; color:#0f172a; font-weight:600 }
+.top-datetime .time{ font-size:1.25rem; color:#0f172a; font-weight:800 }
 
-    /* मैसेज */
-    .message{position:fixed;left:50%;top:60%;transform:translate(-50%,-50%) scale(.96);max-width:90vw;text-align:center;line-height:1.5;
-      padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(8px);font-weight:700;color:#222;opacity:0}
-    .message .title{font-size:28px;background-image:linear-gradient(90deg,#ff4dd2,#ff884d,#6c9cff,#2fd6a7);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .message .sub{margin-top:8px;font-weight:600;color:#2b3a55}
+.main-grid{ display:flex; gap:22px; align-items:center; justify-content:space-between; flex-wrap:wrap }
 
-    /* बॉर्डर फ्रेम */
-    .frame{position:fixed;inset:16px;pointer-events:none;border:3px dashed rgba(255,105,180,.6);border-radius:18px;box-shadow:inset 0 0 0 6px rgba(255,255,255,.35)}
+/* countdown */
+.countdown-wrap{
+  width:180px; height:180px; margin:auto; position:relative;
+}
+.countdown-wrap svg{ width:100%; height:100%; transform:rotate(-90deg) }
+.countdown-wrap circle{ fill:none; stroke-width:10; stroke-linecap:round }
+.countdown-wrap .bg{ stroke:#e2e8f0 }
+.countdown-wrap .prog{ stroke:#0ea5e9; stroke-dasharray: 314; stroke-dashoffset:314 }
+.count-num{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2.4rem; font-weight:800; color:#03224a }
 
-    /* फुटर */
-    footer{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:10px 12px;color:#ff4fa3;font-weight:700;background:rgba(255,255,255,.35);backdrop-filter:blur(6px)}
+/* greeting */
+.greetings{ flex:1; min-width:260px }
+.greetings h1{ margin:0; font-size:2rem; color:#03224a }
+.greetings p.msg{ margin:10px 0 6px 0; font-weight:800; font-size:1.05rem; background: linear-gradient(90deg,#f97316,#a78bfa,#06b6d4); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.greetings .visit{ font-size:0.95rem; color:#0b2447 }
 
-    @media (min-width:720px){.message{top:58%;font-size:20px}}
+/* emojis container hidden until celebrate */
+.emojis{ position:relative; width:100%; height:220px; pointer-events:none; display:none }
+.emoji{
+  position:absolute; font-size:30px; will-change:transform; display:inline-block; user-select:none;
+  animation-iteration-count:infinite; animation-timing-function:linear; animation-direction:normal;
+}
+
+/* footer */
+.footer{ text-align:center; font-weight:700; color:#ff4da6; position:fixed; left:0; right:0; bottom:18px; display:none }
+
+/* bubbles (background) */
+.bubble{ position:absolute; bottom:-120px; border-radius:50%; background:rgba(255,255,255,0.45); opacity:0.85 }
+
+/* reveal classes when finished */
+body.celebrate{ background: linear-gradient(to bottom, var(--bhagwa-start), var(--bhagwa-end)); }
+body.celebrate .top-datetime, body.celebrate .emojis, body.celebrate .footer, body.celebrate .greetings .visit { display:block }
+
+/* emoji across animation - we'll set duration via inline style */
+@keyframes acrossX{
+  0%{ transform: translateX(0) translateY(0) rotate(0deg) }
+  25%{ transform: translateX(20vw) translateY(-8vh) rotate(15deg) }
+  50%{ transform: translateX(-5vw) translateY(-18vh) rotate(-20deg) }
+  75%{ transform: translateX(30vw) translateY(-10vh) rotate(10deg) }
+  100%{ transform: translateX(0) translateY(0) rotate(0deg) }
+}
+
+/* responsive */
+@media (max-width:640px){ .main-grid{flex-direction:column; align-items:center} .emoji{font-size:26px} }
+
   </style>
 </head>
 <body>
-  <div class="bg"></div>
-  <canvas id="bubbles"></canvas>
-  <canvas id="emojis"></canvas>
+  <div class="page-wrap">
+    <div class="card" id="card">
+      <div class="top-datetime" id="topDatetime">
+        <div class="date" id="dateText"></div>
+        <div class="time" id="timeText"></div>
+      </div><div class="main-grid">
+    <div style="flex-basis:200px; display:flex; justify-content:center; align-items:center;">
+      <div class="countdown-wrap">
+        <svg viewBox="0 0 120 120">
+          <circle class="bg" cx="60" cy="60" r="50"></circle>
+          <circle class="prog" cx="60" cy="60" r="50"></circle>
+        </svg>
+        <div class="count-num" id="countNum">5</div>
+      </div>
+    </div>
 
-  <div class="datetime date" id="dateBox"></div>
-  <div class="datetime time" id="timeBox"></div>
-
-  <!-- काउंटडाउन -->
-  <div class="intro" id="intro">
-    <div class="countdown-wrap">
-      <div class="cd-number" id="cdNum">5</div>
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <defs>
-          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#ff4dd2"/><stop offset="100%" stop-color="#6c9cff"/>
-          </linearGradient>
-        </defs>
-        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
-        <circle class="ring-progress" id="ring" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="0"></circle>
-      </svg>
+    <div class="greetings">
+      <h1>Happy Birthday, Gaurav Bhai! 🎉</h1>
+      <p class="msg">[  मै विशाल तिवारी आज के शुभ दिन के अवसर पर स्वागत करता हु आज के खास दिन पर  मेरी तरफ से ढेर सारा उपहार ! ]</p>
+      <div class="visit" id="visitDate" style="display:none">Visit date: <b>28 September 2025</b></div>
     </div>
   </div>
 
-  <!-- संदेश -->
-  <div class="message" id="wish">
-    <div class="title">गौरव भाई, Happy Birthday! 🎉</div>
-    <div class="sub">[  मै विशाल तिवारी आज के शुभ दिन के अवसर पर स्वागत करता हु आज के खास दिन पर  मेरी तरफ से ढेर सारा उपहार ! ]</div>
-  </div>
+  <div class="emojis" id="emojisArea"></div>
+</div>
 
-  <div class="frame"></div>
-  <footer>पार्टी के देने के लिए अपने दोस्त से मिले🙃😊</footer>
+  </div>  <div class="footer" id="footer">[ पार्टी के देने के लिए अपने दोस्त से मिले🙃😊 ]</div>  <script>
+    // ----- setup -----
+    const prog = document.querySelector('.prog');
+    const radius = 50;
+    const circumference = 2 * Math.PI * radius;
+    prog.style.strokeDasharray = circumference;
+    prog.style.strokeDashoffset = circumference;
 
-<script>
-/* तारीख/समय – India (Asia/Kolkata) */  // concept: animated DOM timer update
-function updateClock(){
-  const now = new Date();
-  document.getElementById('dateBox').textContent =
-    new Intl.DateTimeFormat('hi-IN',{timeZone:'Asia/Kolkata',weekday:'long',day:'2-digit',month:'long',year:'numeric'}).format(now);
-  document.getElementById('timeBox').textContent =
-    new Intl.DateTimeFormat('hi-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
-}
-updateClock(); setInterval(updateClock, 500);  // smoother ticks [web:32]
+    const countEl = document.getElementById('countNum');
+    const visitDateEl = document.getElementById('visitDate');
 
-/* पानी-बबल्स बैकग्राउंड (Canvas) */ // rAF + arcs + gradient bubbles
-const bub = document.getElementById('bubbles'); const btx = bub.getContext('2d');
-let BW, BH, bubbles=[]; function resizeB(){BW=bub.width=innerWidth; BH=bub.height=innerHeight} addEventListener('resize',resizeB); resizeB();
-function makeBubbles(n=60){bubbles.length=0; for(let i=0;i<n;i++){bubbles.push({x:Math.random()*BW,y:Math.random()*BH,r:4+Math.random()*14,vy:0.2+Math.random()*0.8,swayA:Math.random()*Math.PI*2,swayS:0.6+Math.random()*1.2,h:195+Math.random()*20});}}
-makeBubbles(innerWidth>900?80:50);
-(function drawB(){btx.clearRect(0,0,BW,BH); for(const b of bubbles){b.swayA+=0.01; const sx=Math.sin(b.swayA)*b.swayS; b.y-=b.vy; b.x+=sx*0.4; if(b.y+b.r<-10){b.y=BH+10; b.x=Math.random()*BW;} const g=btx.createRadialGradient(b.x,b.y,b.r*0.2,b.x,b.y,b.r); g.addColorStop(0,`hsla(${b.h},85%,92%,0.9)`); g.addColorStop(1,`hsla(${b.h},70%,70%,0.15)`); btx.fillStyle=g; btx.beginPath(); btx.arc(b.x,b.y,b.r,0,Math.PI*2); btx.fill(); btx.fillStyle='rgba(255,255,255,0.35)'; btx.beginPath(); btx.arc(b.x-b.r*0.3,b.y-b.r*0.3,b.r*0.25,0,Math.PI*2); btx.fill(); } requestAnimationFrame(drawB);})(); // [web:21]
+    // Live datetime updater (India)
+    function updateDateTime(){
+      const now = new Date();
+      const optsDate = { year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata' };
+      const optsTime = { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'Asia/Kolkata' };
+      document.getElementById('dateText').textContent = now.toLocaleDateString('hi-IN', optsDate);
+      document.getElementById('timeText').textContent = now.toLocaleTimeString('hi-IN', optsTime);
+    }
+    // keep updating in background (but hidden until celebrate)
+    setInterval(updateDateTime, 500);
+    updateDateTime();
 
-/* 5 सेकंड काउंटडाउन – सर्कुलर रिंग + नंबर */  // stroke-dash + DOM number
-const DURATION=5, ring=document.getElementById('ring'), cdNum=document.getElementById('cdNum'), CIRC=2*Math.PI*44;
-ring.setAttribute('stroke-dasharray', CIRC.toFixed(2));
-let start=performance.now(), last= DURATION;
-(function tick(t){const el=Math.min((t-start)/1000,DURATION); const remain=Math.max(0,DURATION-el); ring.style.strokeDashoffset=(CIRC*(el/DURATION)).toFixed(2);
-  const show=Math.ceil(remain); if(show!==last){last=show; cdNum.textContent= show===0? '' : String(show);}
-  if(el<DURATION){requestAnimationFrame(tick);} else {ring.style.strokeDashoffset=CIRC.toFixed(2); document.getElementById('intro').style.display='none'; revealMessage(); launchEmojis();}})(performance.now()); // [web:32]
+    // ----- countdown + synced circular animation for exactly 5s -----
+    const TOTAL_MS = 5000;
+    let start = null;
 
-/* मैसेज रिवील */
-function revealMessage(){const w=document.getElementById('wish'); w.style.transition='opacity 800ms ease, transform 800ms ease';
-  requestAnimationFrame(()=>{w.style.opacity='1'; w.style.transform='translate(-50%,-50%) scale(1)';});}
+    function animateCountdown(ts){
+      if (!start) start = ts;
+      const elapsed = ts - start;
+      const t = Math.min(elapsed / TOTAL_MS, 1); // 0..1
+      // circle progress (from 0 -> full)
+      const offset = circumference * (1 - t);
+      prog.style.strokeDashoffset = offset;
 
-/* इमोजी बाउंस (Canvas) – बॉर्डर से टकराव */ // boundary collisions
-const eco=document.getElementById('emojis'), etx=eco.getContext('2d');
-function resizeE(){eco.width=innerWidth; eco.height=innerHeight;} addEventListener('resize',resizeE); resizeE();
-const EMOJIS="🎂💐🥳🧁🎊🎉🎶🎵🎺👑🎊💌🕯️🧡🌞🌷".split(''); let sprites=[];
-function launchEmojis(){sprites.length=0; const N=Math.min(EMOJIS.length*2,40);
-  for(let i=0;i<N;i++){const t=EMOJIS[i%EMOJIS.length], s=28+Math.random()*28; sprites.push({t, x:Math.random()*eco.width, y:Math.random()*eco.height*0.5, vx:(-1+Math.random()*2)*(1.2+Math.random()*1.8), vy:(0.6+Math.random()*1.6), s, r:s*0.6});}
-  animateE();
-}
-function animateE(){etx.clearRect(0,0,eco.width,eco.height); sprites.forEach(sp=>{sp.x+=sp.vx; sp.y+=sp.vy; sp.vy+=0.02;
-  const w=eco.width,h=eco.height,r=sp.r; if(sp.x<r){sp.x=r; sp.vx=Math.abs(sp.vx);} if(sp.x>w-r){sp.x=w-r; sp.vx=-Math.abs(sp.vx);}
-  if(sp.y<r){sp.y=r; sp.vy=Math.abs(sp.vy);} if(sp.y>h-r){sp.y=h-r; sp.vy=-Math.abs(sp.vy)*0.92; sp.vx*=0.99;}
-  etx.font=`${sp.s}px system-ui, apple color emoji, segoe ui emoji`; etx.textAlign='center'; etx.textBaseline='middle'; etx.fillText(sp.t, sp.x, sp.y);});
-  requestAnimationFrame(animateE);
-} // [web:30]
+      // numeric display: show 5..1 each second
+      const remaining = Math.max(0, 5 - Math.floor(t * 5));
+      countEl.textContent = remaining;
 
-/* 28 Sept 2025 के लिए टाइटल हाइलाइट */
-(function specialDay(){const tzNow=new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}); const d=new Date(tzNow);
-  if(d.getDate()===28 && d.getMonth()+1===9 && d.getFullYear()===2025){document.title='Happy Birthday Gaurav Bhai 🎉';}})();
-</script>
-</body>
+      if (t < 1) {
+        requestAnimationFrame(animateCountdown);
+      } else {
+        // finish
+        countEl.textContent = 0;
+        finishSequence();
+      }
+    }
+
+    // start animation when DOM content is ready
+    window.addEventListener('load', ()=>{
+      requestAnimationFrame(animateCountdown);
+    });
+
+    // ----- after countdown finishes -----
+    function finishSequence(){
+      // background to bhagwa
+      document.body.classList.add('celebrate');
+
+      // reveal visit date and top datetime and footer
+      document.getElementById('visitDate').style.display = 'block';
+      document.getElementById('topDatetime').style.display = 'block';
+      document.getElementById('footer').style.display = 'block';
+
+      // create floating emojis across the area
+      launchEmojis();
+
+      // increase bubble visibility / continue background bubbles
+      ensureBubbles();
+    }
+
+    // emojis behavior
+    function launchEmojis(){
+      const emojis = ["🎂","💐","🥳","🧁","🎊","🎉","🎶","🎵","🎺","👑","🎊","💌","🕯️","🧡","🌞","🌷"];
+      const area = document.getElementById('emojisArea');
+      area.style.display = 'block';
+      // create many emojis with random positions and speeds
+      for(let i=0;i<18;i++){
+        const s = document.createElement('span');
+        s.className = 'emoji';
+        s.textContent = emojis[i % emojis.length];
+        // random start position inside card
+        const left = Math.random()*80 + 5; // %
+        const top = Math.random()*60 + 10; // %
+        s.style.left = left + '%';
+        s.style.top = top + '%';
+        // random duration and timing
+        const dur = 3 + Math.random()*6;
+        s.style.animationName = 'acrossX';
+        s.style.animationDuration = dur + 's';
+        s.style.animationTimingFunction = 'ease-in-out';
+        s.style.animationIterationCount = 'infinite';
+        s.style.opacity = 0.95;
+        area.appendChild(s);
+      }
+    }
+
+    // bubbles background (continuous)
+    function ensureBubbles(){
+      // if bubbles already present, do nothing
+      if(document.querySelectorAll('.bubble').length) return;
+      for(let i=0;i<16;i++){
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = 18 + Math.random()*90;
+        b.style.width = size + 'px';
+        b.style.height = size + 'px';
+        b.style.left = Math.random()*100 + '%';
+        b.style.animationDuration = (6 + Math.random()*10) + 's';
+        b.style.opacity = (0.25 + Math.random()*0.6).toFixed(2);
+        document.body.appendChild(b);
+      }
+    }
+
+    // In case user re-opens or wants immediate celebration if date matches -- optional
+    // (We keep it simple: the animation always runs on page load)
+  </script></body>
 </html>
