@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday | Gaurav Bhai</title>
+  <style>
+    :root{
+      --sky:#cfefff;    /* हल्का आसमानी */
+      --saff:#ffca80;   /* नरम भगवा */
+      --text:#1d2a35;
+    }
+    html,body{height:100%;margin:0;overflow:hidden;font-family:system-ui,Segoe UI,Roboto,Arial}
+    /* स्मूद बैकग्राउंड शिफ्ट (आसमानी→भगवा) */
+    .bg{position:fixed;inset:0;background:linear-gradient(120deg,var(--sky),var(--saff));background-size:200% 200%;
+        animation:bgShift 20s ease-in-out infinite alternate;z-index:-2}
+    @keyframes bgShift{from{background-position:0% 50%}to{background-position:100% 50%}}
+
+    canvas#bubbles,canvas#emojis{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
+
+    /* तारीख/समय */
+    .datetime{position:fixed;left:50%;transform:translateX(-50%);text-align:center;user-select:none;color:#0f3057}
+    .date{top:10px;font-weight:600;background:rgba(255,255,255,.6);padding:6px 12px;border-radius:12px;backdrop-filter:blur(6px)}
+    .time{bottom:10px;font-weight:700;font-size:18px;background:rgba(255,255,255,.6);padding:8px 14px;border-radius:12px;backdrop-filter:blur(6px)}
+
+    /* 5s स्लाइड-इन + काउंटडाउन */
+    .intro{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:slideDown 5s ease-in-out forwards}
+    @keyframes slideDown{0%{transform:translateY(-100%)}100%{transform:translateY(0%)}}
+
+    .countdown-wrap{width:220px;height:220px;position:relative;display:grid;place-items:center;filter:drop-shadow(0 10px 30px rgba(0,0,0,.15))}
+    .cd-number{position:absolute;font-size:64px;font-weight:800;color:#0c2d57;text-shadow:0 2px 0 rgba(255,255,255,.6)}
+    svg{width:220px;height:220px;transform:rotate(-90deg)}
+    .ring-bg{stroke:rgba(255,255,255,.6);stroke-width:14;fill:none}
+    .ring-progress{stroke:url(#grad);stroke-width:14;fill:none;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+
+    /* मैसेज */
+    .message{position:fixed;left:50%;top:60%;transform:translate(-50%,-50%) scale(.96);max-width:90vw;text-align:center;line-height:1.5;
+      padding:14px 18px;border-radius:16px;background:rgba(255,255,255,.55);backdrop-filter:blur(8px);font-weight:700;color:#222;opacity:0}
+    .message .title{font-size:28px;background-image:linear-gradient(90deg,#ff4dd2,#ff884d,#6c9cff,#2fd6a7);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .message .sub{margin-top:8px;font-weight:600;color:#2b3a55}
+
+    /* बॉर्डर फ्रेम */
+    .frame{position:fixed;inset:16px;pointer-events:none;border:3px dashed rgba(255,105,180,.6);border-radius:18px;box-shadow:inset 0 0 0 6px rgba(255,255,255,.35)}
+
+    /* फुटर */
+    footer{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:10px 12px;color:#ff4fa3;font-weight:700;background:rgba(255,255,255,.35);backdrop-filter:blur(6px)}
+
+    @media (min-width:720px){.message{top:58%;font-size:20px}}
+  </style>
+</head>
+<body>
+  <div class="bg"></div>
+  <canvas id="bubbles"></canvas>
+  <canvas id="emojis"></canvas>
+
+  <div class="datetime date" id="dateBox"></div>
+  <div class="datetime time" id="timeBox"></div>
+
+  <!-- काउंटडाउन -->
+  <div class="intro" id="intro">
+    <div class="countdown-wrap">
+      <div class="cd-number" id="cdNum">5</div>
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff4dd2"/><stop offset="100%" stop-color="#6c9cff"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+        <circle class="ring-progress" id="ring" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="0"></circle>
+      </svg>
+    </div>
+  </div>
+
+  <!-- संदेश -->
+  <div class="message" id="wish">
+    <div class="title">गौरव भाई, Happy Birthday! 🎉</div>
+    <div class="sub">[  मै विशाल तिवारी आज के शुभ दिन के अवसर पर स्वागत करता हु आज के खास दिन पर  मेरी तरफ से ढेर सारा उपहार ! ]</div>
+  </div>
+
+  <div class="frame"></div>
+  <footer>पार्टी के देने के लिए अपने दोस्त से मिले🙃😊</footer>
+
+<script>
+/* तारीख/समय – India (Asia/Kolkata) */  // concept: animated DOM timer update
+function updateClock(){
+  const now = new Date();
+  document.getElementById('dateBox').textContent =
+    new Intl.DateTimeFormat('hi-IN',{timeZone:'Asia/Kolkata',weekday:'long',day:'2-digit',month:'long',year:'numeric'}).format(now);
+  document.getElementById('timeBox').textContent =
+    new Intl.DateTimeFormat('hi-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
+}
+updateClock(); setInterval(updateClock, 500);  // smoother ticks [web:32]
+
+/* पानी-बबल्स बैकग्राउंड (Canvas) */ // rAF + arcs + gradient bubbles
+const bub = document.getElementById('bubbles'); const btx = bub.getContext('2d');
+let BW, BH, bubbles=[]; function resizeB(){BW=bub.width=innerWidth; BH=bub.height=innerHeight} addEventListener('resize',resizeB); resizeB();
+function makeBubbles(n=60){bubbles.length=0; for(let i=0;i<n;i++){bubbles.push({x:Math.random()*BW,y:Math.random()*BH,r:4+Math.random()*14,vy:0.2+Math.random()*0.8,swayA:Math.random()*Math.PI*2,swayS:0.6+Math.random()*1.2,h:195+Math.random()*20});}}
+makeBubbles(innerWidth>900?80:50);
+(function drawB(){btx.clearRect(0,0,BW,BH); for(const b of bubbles){b.swayA+=0.01; const sx=Math.sin(b.swayA)*b.swayS; b.y-=b.vy; b.x+=sx*0.4; if(b.y+b.r<-10){b.y=BH+10; b.x=Math.random()*BW;} const g=btx.createRadialGradient(b.x,b.y,b.r*0.2,b.x,b.y,b.r); g.addColorStop(0,`hsla(${b.h},85%,92%,0.9)`); g.addColorStop(1,`hsla(${b.h},70%,70%,0.15)`); btx.fillStyle=g; btx.beginPath(); btx.arc(b.x,b.y,b.r,0,Math.PI*2); btx.fill(); btx.fillStyle='rgba(255,255,255,0.35)'; btx.beginPath(); btx.arc(b.x-b.r*0.3,b.y-b.r*0.3,b.r*0.25,0,Math.PI*2); btx.fill(); } requestAnimationFrame(drawB);})(); // [web:21]
+
+/* 5 सेकंड काउंटडाउन – सर्कुलर रिंग + नंबर */  // stroke-dash + DOM number
+const DURATION=5, ring=document.getElementById('ring'), cdNum=document.getElementById('cdNum'), CIRC=2*Math.PI*44;
+ring.setAttribute('stroke-dasharray', CIRC.toFixed(2));
+let start=performance.now(), last= DURATION;
+(function tick(t){const el=Math.min((t-start)/1000,DURATION); const remain=Math.max(0,DURATION-el); ring.style.strokeDashoffset=(CIRC*(el/DURATION)).toFixed(2);
+  const show=Math.ceil(remain); if(show!==last){last=show; cdNum.textContent= show===0? '' : String(show);}
+  if(el<DURATION){requestAnimationFrame(tick);} else {ring.style.strokeDashoffset=CIRC.toFixed(2); document.getElementById('intro').style.display='none'; revealMessage(); launchEmojis();}})(performance.now()); // [web:32]
+
+/* मैसेज रिवील */
+function revealMessage(){const w=document.getElementById('wish'); w.style.transition='opacity 800ms ease, transform 800ms ease';
+  requestAnimationFrame(()=>{w.style.opacity='1'; w.style.transform='translate(-50%,-50%) scale(1)';});}
+
+/* इमोजी बाउंस (Canvas) – बॉर्डर से टकराव */ // boundary collisions
+const eco=document.getElementById('emojis'), etx=eco.getContext('2d');
+function resizeE(){eco.width=innerWidth; eco.height=innerHeight;} addEventListener('resize',resizeE); resizeE();
+const EMOJIS="🎂💐🥳🧁🎊🎉🎶🎵🎺👑🎊💌🕯️🧡🌞🌷".split(''); let sprites=[];
+function launchEmojis(){sprites.length=0; const N=Math.min(EMOJIS.length*2,40);
+  for(let i=0;i<N;i++){const t=EMOJIS[i%EMOJIS.length], s=28+Math.random()*28; sprites.push({t, x:Math.random()*eco.width, y:Math.random()*eco.height*0.5, vx:(-1+Math.random()*2)*(1.2+Math.random()*1.8), vy:(0.6+Math.random()*1.6), s, r:s*0.6});}
+  animateE();
+}
+function animateE(){etx.clearRect(0,0,eco.width,eco.height); sprites.forEach(sp=>{sp.x+=sp.vx; sp.y+=sp.vy; sp.vy+=0.02;
+  const w=eco.width,h=eco.height,r=sp.r; if(sp.x<r){sp.x=r; sp.vx=Math.abs(sp.vx);} if(sp.x>w-r){sp.x=w-r; sp.vx=-Math.abs(sp.vx);}
+  if(sp.y<r){sp.y=r; sp.vy=Math.abs(sp.vy);} if(sp.y>h-r){sp.y=h-r; sp.vy=-Math.abs(sp.vy)*0.92; sp.vx*=0.99;}
+  etx.font=`${sp.s}px system-ui, apple color emoji, segoe ui emoji`; etx.textAlign='center'; etx.textBaseline='middle'; etx.fillText(sp.t, sp.x, sp.y);});
+  requestAnimationFrame(animateE);
+} // [web:30]
+
+/* 28 Sept 2025 के लिए टाइटल हाइलाइट */
+(function specialDay(){const tzNow=new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}); const d=new Date(tzNow);
+  if(d.getDate()===28 && d.getMonth()+1===9 && d.getFullYear()===2025){document.title='Happy Birthday Gaurav Bhai 🎉';}})();
+</script>
+</body>
+</html>
