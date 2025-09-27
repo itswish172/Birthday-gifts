@@ -1,241 +1,244 @@
-<!DOCTYPE html>
-<html lang="hi">
+<!DOCTYPE html><html lang="hi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday | Gaurav Bhai</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Gaurav Bhai 🎉</title>
   <style>
-    html,body{height:100%;margin:0;overflow:hidden;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
-    
-    /* बैकग्राउंड: पहले आसमानी, फिर भगवा में ट्रांज़िशन */
-    .bg{
-      position:fixed;inset:0;z-index:-2;
-      background:#87ceeb; /* हल्का आसमानी */
-      transition: background-color 3s ease-in-out;
-    }
-    .bg.saffron{
-      background:#ffb84d; /* हल्का भगवा */
-    }
-    
-    canvas{position:fixed;inset:0;width:100%;height:100%;z-index:-1}
-    
-    /* तारीख/समय */
-    .datetime{position:fixed;left:50%;transform:translateX(-50%);text-align:center;user-select:none;color:#0f3057;font-weight:600}
-    .date{top:15px;background:rgba(255,255,255,.8);padding:8px 16px;border-radius:12px;backdrop-filter:blur(6px)}
-    .time{bottom:15px;font-size:18px;background:rgba(255,255,255,.8);padding:10px 16px;border-radius:12px;backdrop-filter:blur(6px)}
-    
-    /* 5s स्लाइड इन काउंटडाउन */
-    .intro{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;
-           animation:slideDown 5s ease-in-out forwards}
-    @keyframes slideDown{0%{transform:translateY(-100%)}100%{transform:translateY(0%)}}
-    
-    .countdown-wrap{width:200px;height:200px;position:relative;display:grid;place-items:center;
-                    filter:drop-shadow(0 10px 30px rgba(0,0,0,.2))}
-    .cd-number{position:absolute;font-size:72px;font-weight:900;color:#1a5490;text-shadow:2px 2px 0 rgba(255,255,255,.7)}
-    
-    svg{width:200px;height:200px;transform:rotate(-90deg)}
-    .ring-bg{stroke:rgba(255,255,255,.7);stroke-width:12;fill:none}
-    .ring-progress{stroke:#4169e1;stroke-width:12;fill:none;stroke-linecap:round;
-                   transition:stroke-dashoffset 1s linear}
-    
-    /* मैसेज */
-    .message{position:fixed;left:50%;top:58%;transform:translate(-50%,-50%) scale(.9);max-width:90vw;
-             text-align:center;line-height:1.6;padding:20px 24px;border-radius:18px;
-             background:rgba(255,255,255,.75);backdrop-filter:blur(10px);font-weight:700;color:#222;
-             opacity:0;transition:opacity 1s ease, transform 1s ease}
-    .message.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-    .message .title{font-size:32px;margin-bottom:12px;
-                    background:linear-gradient(45deg,#ff1493,#ff6347,#4169e1,#32cd32);
-                    -webkit-background-clip:text;background-clip:text;color:transparent}
-    .message .sub{font-weight:600;color:#2b4c85;font-size:16px}
-    
-    /* फुटर */
-    footer{position:fixed;bottom:0;left:0;right:0;text-align:center;padding:12px;
-           color:#ff1493;font-weight:700;font-size:16px;
-           background:rgba(255,255,255,.6);backdrop-filter:blur(8px)}
-    
-    /* बॉर्डर */
-    .frame{position:fixed;inset:20px;pointer-events:none;
-           border:4px dashed rgba(255,20,147,.4);border-radius:20px;
-           box-shadow:inset 0 0 0 8px rgba(255,255,255,.4)}
-    
-    @media (max-width:720px){
-      .message .title{font-size:24px}
-      .message .sub{font-size:14px}
-    }
+    :root{
+      --sky-start: #cfeefd;
+      --sky-end: #e6f7ff;
+      --bhagwa-start: #fff1e6; /* light bhagwa */
+      --bhagwa-end: #ffd7a6;
+    }*{box-sizing:border-box}
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+  background: linear-gradient(to bottom, var(--sky-start), var(--sky-end));
+  transition: background 2s ease-in-out;
+}
+
+/* slide container */
+.page-wrap{
+  position: relative;
+  min-height: 100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:6vh;
+}
+
+.card{
+  width: min(920px, 95%);
+  background: rgba(255,255,255,0.65);
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  padding: 28px;
+  box-shadow: 0 10px 40px rgba(2,6,23,0.15);
+  transform: translateY(-120vh);
+  animation: slideDown 5s forwards ease-out;
+}
+
+@keyframes slideDown{
+  0%{ transform: translateY(-120vh); opacity:0 }
+  40%{ opacity:1 }
+  100%{ transform: translateY(0); opacity:1 }
+}
+
+.top-datetime{ text-align:center; margin-bottom:12px; display:none; }
+.top-datetime .date{ font-size:1.05rem; color:#0f172a; font-weight:600 }
+.top-datetime .time{ font-size:1.25rem; color:#0f172a; font-weight:800 }
+
+.main-grid{ display:flex; gap:22px; align-items:center; justify-content:space-between; flex-wrap:wrap }
+
+/* countdown */
+.countdown-wrap{
+  width:180px; height:180px; margin:auto; position:relative;
+}
+.countdown-wrap svg{ width:100%; height:100%; transform:rotate(-90deg) }
+.countdown-wrap circle{ fill:none; stroke-width:10; stroke-linecap:round }
+.countdown-wrap .bg{ stroke:#e2e8f0 }
+.countdown-wrap .prog{ stroke:#0ea5e9; stroke-dasharray: 314; stroke-dashoffset:314 }
+.count-num{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:2.4rem; font-weight:800; color:#03224a }
+
+/* greeting */
+.greetings{ flex:1; min-width:260px }
+.greetings h1{ margin:0; font-size:2rem; color:#03224a }
+.greetings p.msg{ margin:10px 0 6px 0; font-weight:800; font-size:1.05rem; background: linear-gradient(90deg,#f97316,#a78bfa,#06b6d4); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+.greetings .visit{ font-size:0.95rem; color:#0b2447 }
+
+/* emojis container hidden until celebrate */
+.emojis{ position:relative; width:100%; height:220px; pointer-events:none; display:none }
+.emoji{
+  position:absolute; font-size:30px; will-change:transform; display:inline-block; user-select:none;
+  animation-iteration-count:infinite; animation-timing-function:linear; animation-direction:normal;
+}
+
+/* footer */
+.footer{ text-align:center; font-weight:700; color:#ff4da6; position:fixed; left:0; right:0; bottom:18px; display:none }
+
+/* bubbles (background) */
+.bubble{ position:absolute; bottom:-120px; border-radius:50%; background:rgba(255,255,255,0.45); opacity:0.85 }
+
+/* reveal classes when finished */
+body.celebrate{ background: linear-gradient(to bottom, var(--bhagwa-start), var(--bhagwa-end)); }
+body.celebrate .top-datetime, body.celebrate .emojis, body.celebrate .footer, body.celebrate .greetings .visit { display:block }
+
+/* emoji across animation - we'll set duration via inline style */
+@keyframes acrossX{
+  0%{ transform: translateX(0) translateY(0) rotate(0deg) }
+  25%{ transform: translateX(20vw) translateY(-8vh) rotate(15deg) }
+  50%{ transform: translateX(-5vw) translateY(-18vh) rotate(-20deg) }
+  75%{ transform: translateX(30vw) translateY(-10vh) rotate(10deg) }
+  100%{ transform: translateX(0) translateY(0) rotate(0deg) }
+}
+
+/* responsive */
+@media (max-width:640px){ .main-grid{flex-direction:column; align-items:center} .emoji{font-size:26px} }
+
   </style>
 </head>
 <body>
-  <div class="bg" id="bgColor"></div>
-  <canvas id="bubbles"></canvas>
-  <canvas id="emojis"></canvas>
-  
-  <div class="datetime date" id="dateBox"></div>
-  <div class="datetime time" id="timeBox"></div>
-  
-  <!-- काउंटडाउन -->
-  <div class="intro" id="intro">
-    <div class="countdown-wrap">
-      <div class="cd-number" id="cdNum">5</div>
-      <svg viewBox="0 0 100 100">
-        <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
-        <circle class="ring-progress" id="ring" cx="50" cy="50" r="42" 
-                stroke-dasharray="263.89" stroke-dashoffset="0"></circle>
-      </svg>
+  <div class="page-wrap">
+    <div class="card" id="card">
+      <div class="top-datetime" id="topDatetime">
+        <div class="date" id="dateText"></div>
+        <div class="time" id="timeText"></div>
+      </div><div class="main-grid">
+    <div style="flex-basis:200px; display:flex; justify-content:center; align-items:center;">
+      <div class="countdown-wrap">
+        <svg viewBox="0 0 120 120">
+          <circle class="bg" cx="60" cy="60" r="50"></circle>
+          <circle class="prog" cx="60" cy="60" r="50"></circle>
+        </svg>
+        <div class="count-num" id="countNum">5</div>
+      </div>
+    </div>
+
+    <div class="greetings">
+      <h1>Happy Birthday, Gaurav Bhai! 🎉</h1>
+      <p class="msg">[  मै विशाल तिवारी आज के शुभ दिन के अवसर पर स्वागत करता हु आज के खास दिन पर  मेरी तरफ से ढेर सारा उपहार ! ]</p>
+      <div class="visit" id="visitDate" style="display:none">Visit date: <b>28 September 2025</b></div>
     </div>
   </div>
-  
-  <!-- संदेश -->
-  <div class="message" id="wish">
-    <div class="title">गौरव भाई, Happy Birthday! 🎉</div>
-    <div class="sub">मै विशाल तिवारी आज के शुभ दिन के अवसर पर स्वागत करता हु आज के खास दिन पर मेरी तरफ से ढेर सारा उपहार!</div>
-  </div>
-  
-  <div class="frame"></div>
-  <footer>पार्टी के देने के लिए अपने दोस्त से मिले🙃😊</footer>
 
-<script>
-/* इंडिया का लाइव समय */ // DOM time updates pattern [web:54]
-function updateClock(){
-  const now = new Date();
-  const opts = {timeZone:'Asia/Kolkata'};
-  document.getElementById('dateBox').textContent = 
-    new Intl.DateTimeFormat('hi-IN',{...opts,weekday:'long',day:'2-digit',month:'long',year:'numeric'}).format(now);
-  document.getElementById('timeBox').textContent = 
-    new Intl.DateTimeFormat('hi-IN',{...opts,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
-}
-updateClock(); setInterval(updateClock, 500);
+  <div class="emojis" id="emojisArea"></div>
+</div>
 
-/* पानी-बबल्स बैकग्राउंड */ // canvas animation with rAF
-const bubCanvas = document.getElementById('bubbles');
-const bctx = bubCanvas.getContext('2d');
-let BW, BH, bubbles = [];
+  </div>  <div class="footer" id="footer">[ पार्टी के देने के लिए अपने दोस्त से मिले🙃😊 ]</div>  <script>
+    // ----- setup -----
+    const prog = document.querySelector('.prog');
+    const radius = 50;
+    const circumference = 2 * Math.PI * radius;
+    prog.style.strokeDasharray = circumference;
+    prog.style.strokeDashoffset = circumference;
 
-function resizeBubbles(){
-  BW = bubCanvas.width = window.innerWidth;
-  BH = bubCanvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeBubbles);
-resizeBubbles();
+    const countEl = document.getElementById('countNum');
+    const visitDateEl = document.getElementById('visitDate');
 
-function createBubbles(count = 50){
-  bubbles = [];
-  for(let i = 0; i < count; i++){
-    bubbles.push({
-      x: Math.random() * BW,
-      y: Math.random() * BH,
-      radius: 6 + Math.random() * 12,
-      speed: 0.3 + Math.random() * 0.7,
-      sway: Math.random() * Math.PI * 2,
-      swaySpeed: 0.8 + Math.random() * 1.4,
-      alpha: 0.4 + Math.random() * 0.6
-    });
-  }
-}
-createBubbles();
-
-function animateBubbles(){
-  bctx.clearRect(0, 0, BW, BH);
-  
-  bubbles.forEach(bubble => {
-    bubble.sway += 0.008;
-    bubble.x += Math.sin(bubble.sway) * bubble.swaySpeed * 0.5;
-    bubble.y -= bubble.speed;
-    
-    if(bubble.y + bubble.radius < -20){
-      bubble.y = BH + 20;
-      bubble.x = Math.random() * BW;
+    // Live datetime updater (India)
+    function updateDateTime(){
+      const now = new Date();
+      const optsDate = { year:'numeric', month:'long', day:'numeric', timeZone:'Asia/Kolkata' };
+      const optsTime = { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone:'Asia/Kolkata' };
+      document.getElementById('dateText').textContent = now.toLocaleDateString('hi-IN', optsDate);
+      document.getElementById('timeText').textContent = now.toLocaleTimeString('hi-IN', optsTime);
     }
-    
-    const gradient = bctx.createRadialGradient(
-      bubble.x, bubble.y, bubble.radius * 0.1,
-      bubble.x, bubble.y, bubble.radius
-    );
-    gradient.addColorStop(0, `rgba(255,255,255,${bubble.alpha})`);
-    gradient.addColorStop(0.7, `rgba(173,216,230,${bubble.alpha * 0.6})`);
-    gradient.addColorStop(1, `rgba(173,216,230,0.1)`);
-    
-    bctx.fillStyle = gradient;
-    bctx.beginPath();
-    bctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
-    bctx.fill();
-    
-    // हाइलाइट
-    bctx.fillStyle = `rgba(255,255,255,${bubble.alpha * 0.8})`;
-    bctx.beginPath();
-    bctx.arc(bubble.x - bubble.radius * 0.3, bubble.y - bubble.radius * 0.3, bubble.radius * 0.2, 0, Math.PI * 2);
-    bctx.fill();
-  });
-  
-  requestAnimationFrame(animateBubbles);
-}
-requestAnimationFrame(animateBubbles);
+    // keep updating in background (but hidden until celebrate)
+    setInterval(updateDateTime, 500);
+    updateDateTime();
 
-/* 5 सेकंड काउंटडाउन */ // circular progress with proper timing [web:54]
-const COUNTDOWN_DURATION = 5000; // 5 सेकंड
-const ring = document.getElementById('ring');
-const cdNumber = document.getElementById('cdNum');
-const CIRCUMFERENCE = 2 * Math.PI * 42; // ~263.89
+    // ----- countdown + synced circular animation for exactly 5s -----
+    const TOTAL_MS = 5000;
+    let start = null;
 
-ring.style.strokeDasharray = CIRCUMFERENCE;
-ring.style.strokeDashoffset = '0';
+    function animateCountdown(ts){
+      if (!start) start = ts;
+      const elapsed = ts - start;
+      const t = Math.min(elapsed / TOTAL_MS, 1); // 0..1
+      // circle progress (from 0 -> full)
+      const offset = circumference * (1 - t);
+      prog.style.strokeDashoffset = offset;
 
-let startTime = Date.now();
-let lastNumber = 5;
+      // numeric display: show 5..1 each second
+      const remaining = Math.max(0, 5 - Math.floor(t * 5));
+      countEl.textContent = remaining;
 
-function updateCountdown(){
-  const elapsed = Date.now() - startTime;
-  const progress = Math.min(elapsed / COUNTDOWN_DURATION, 1);
-  
-  // रिंग प्रोग्रेस
-  const offset = CIRCUMFERENCE * progress;
-  ring.style.strokeDashoffset = offset.toString();
-  
-  // नंबर अपडेट (5, 4, 3, 2, 1)
-  const remaining = Math.ceil((1 - progress) * 5);
-  if(remaining !== lastNumber && remaining >= 0){
-    lastNumber = remaining;
-    cdNumber.textContent = remaining === 0 ? '' : remaining.toString();
-  }
-  
-  if(progress < 1){
-    requestAnimationFrame(updateCountdown);
-  } else {
-    finishCountdown();
-  }
-}
-requestAnimationFrame(updateCountdown);
+      if (t < 1) {
+        requestAnimationFrame(animateCountdown);
+      } else {
+        // finish
+        countEl.textContent = 0;
+        finishSequence();
+      }
+    }
 
-function finishCountdown(){
-  // काउंटडाउन छुपाएं
-  document.getElementById('intro').style.display = 'none';
-  
-  // बैकग्राउंड को भगवा में बदलें [web:60]
-  setTimeout(() => {
-    document.getElementById('bgColor').classList.add('saffron');
-  }, 200);
-  
-  // मैसेज दिखाएं
-  setTimeout(() => {
-    document.getElementById('wish').classList.add('show');
-  }, 800);
-  
-  // इमोजी लॉन्च करें
-  setTimeout(() => {
-    launchEmojis();
-  }, 1500);
-}
+    // start animation when DOM content is ready
+    window.addEventListener('load', ()=>{
+      requestAnimationFrame(animateCountdown);
+    });
 
-/* इमोजी बाउंस एनिमेशन */ // improved emoji canvas rendering [web:53]
-const emojiCanvas = document.getElementById('emojis');
-const ectx = emojiCanvas.getContext('2d');
-let EW, EH;
+    // ----- after countdown finishes -----
+    function finishSequence(){
+      // background to bhagwa
+      document.body.classList.add('celebrate');
 
-function resizeEmojis(){
-  EW = emojiCanvas.width = window.innerWidth;
-  EH = emojiCanvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeEmojis);
-resizeEmojis();
+      // reveal visit date and top datetime and footer
+      document.getElementById('visitDate').style.display = 'block';
+      document.getElementById('topDatetime').style.display = 'block';
+      document.getElementById('footer').style.display = 'block';
 
-const EMOJIS = ['🎂','💐','🥳','🧁','🎊','🎉','🎶','🎵','🎺','👑','💌','
+      // create floating emojis across the area
+      launchEmojis();
+
+      // increase bubble visibility / continue background bubbles
+      ensureBubbles();
+    }
+
+    // emojis behavior
+    function launchEmojis(){
+      const emojis = ["🎂","💐","🥳","🧁","🎊","🎉","🎶","🎵","🎺","👑","🎊","💌","🕯️","🧡","🌞","🌷"];
+      const area = document.getElementById('emojisArea');
+      area.style.display = 'block';
+      // create many emojis with random positions and speeds
+      for(let i=0;i<18;i++){
+        const s = document.createElement('span');
+        s.className = 'emoji';
+        s.textContent = emojis[i % emojis.length];
+        // random start position inside card
+        const left = Math.random()*80 + 5; // %
+        const top = Math.random()*60 + 10; // %
+        s.style.left = left + '%';
+        s.style.top = top + '%';
+        // random duration and timing
+        const dur = 3 + Math.random()*6;
+        s.style.animationName = 'acrossX';
+        s.style.animationDuration = dur + 's';
+        s.style.animationTimingFunction = 'ease-in-out';
+        s.style.animationIterationCount = 'infinite';
+        s.style.opacity = 0.95;
+        area.appendChild(s);
+      }
+    }
+
+    // bubbles background (continuous)
+    function ensureBubbles(){
+      // if bubbles already present, do nothing
+      if(document.querySelectorAll('.bubble').length) return;
+      for(let i=0;i<16;i++){
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = 18 + Math.random()*90;
+        b.style.width = size + 'px';
+        b.style.height = size + 'px';
+        b.style.left = Math.random()*100 + '%';
+        b.style.animationDuration = (6 + Math.random()*10) + 's';
+        b.style.opacity = (0.25 + Math.random()*0.6).toFixed(2);
+        document.body.appendChild(b);
+      }
+    }
+
+    // In case user re-opens or wants immediate celebration if date matches -- optional
+    // (We keep it simple: the animation always runs on page load)
+  </script></body>
+</html>
